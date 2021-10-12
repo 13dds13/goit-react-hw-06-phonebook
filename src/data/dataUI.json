@@ -1,0 +1,13 @@
+{
+  "alertMsg": "is already in contacts. Please change name.",
+  "allContacts": "All contacts:",
+  "search": "Search result:",
+  "inputName": "Enter name:",
+  "inputTel": "Enter number:",
+  "submitBtn": "Add to contacts",
+  "deleteBtn": "Delete",
+  "titleMain": "Phonebook",
+  "titleSecondary": "Contacts",
+  "inputSearch": "Find contact by name:",
+  "noDataToRender": "No contacts :("
+}

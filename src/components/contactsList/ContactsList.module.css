@@ -1,0 +1,41 @@
+ul.listWrap {
+  width: 320px;
+  padding: 16px;
+  border: 1px solid #252525;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+}
+
+.btn {
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.name {
+  font-weight: 500;
+}
+
+.number {
+  margin-left: 8px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.btn {
+  width: 60px;
+  height: 20px;
+  color: #ffffff;
+  background-color: rgb(0, 126, 126);
+  margin-left: auto;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn:hover {
+  cursor: pointer;
+  background-color: rgb(0, 71, 71);
+}

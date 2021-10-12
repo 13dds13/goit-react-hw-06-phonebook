@@ -1,0 +1,8 @@
+{
+  "APP_INITIAL_DATA": { "contacts": [], "filter": "" },
+  "storageKey": "contacts",
+  "FORM_INITIAL_DATA": {
+    "name": "",
+    "number": ""
+  }
+}

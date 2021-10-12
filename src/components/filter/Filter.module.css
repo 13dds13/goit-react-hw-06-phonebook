@@ -1,0 +1,35 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 80px;
+  padding: 16px;
+  border: 1px solid #252525;
+}
+
+.listWrap {
+  margin-top: 20px;
+  padding: 12px;
+  border: 1px solid #252525;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+}
+
+.name {
+  font-weight: 500;
+}
+
+.number {
+  margin-left: 8px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.btn {
+  font-size: 12px;
+  cursor: pointer;
+}
