@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { nanoid } from "nanoid";
-import PropTypes from "prop-types";
 import ContactForm from "./contactForm/ContactForm";
 import Filter from "./filter/Filter";
 import ContactsList from "./contactsList/ContactsList";
@@ -8,7 +7,7 @@ import styles from "./container/Container.module.css";
 import { storageKey } from "../data/initialData.json";
 import dataUI from "../data/dataUI.json";
 import getDataFromStorage from "../service/storageService";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../redux/contacts/contactsActions/contactsActions";
 import {
   checkIsDoublingContacts,
@@ -27,12 +26,17 @@ const {
   noDataToRender,
 } = dataUI;
 
-const App = ({ contacts, filter, addContact }) => {
+const App = () => {
+  const contacts = useSelector((state) => state.contacts.items);
+  const filter = useSelector((state) => state.contacts.filter);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const dataFromStorage = getDataFromStorage();
     if (!dataFromStorage) return;
-    dataFromStorage.map(addContact);
-  }, [addContact]);
+    dataFromStorage.map((contact) => dispatch(addContact(contact)));
+  }, [dispatch]);
 
   useEffect(() => {
     const dataToStorage = JSON.stringify(contacts);
@@ -47,11 +51,13 @@ const App = ({ contacts, filter, addContact }) => {
       return isAlreadyInContacts;
     }
 
-    addContact({
-      name,
-      id: nanoid(),
-      number,
-    });
+    dispatch(
+      addContact({
+        name,
+        id: nanoid(),
+        number,
+      })
+    );
 
     return isAlreadyInContacts;
   };
@@ -80,17 +86,105 @@ const App = ({ contacts, filter, addContact }) => {
   );
 };
 
-App.propTypes = {
-  addContact: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired,
-  contacts: PropTypes.arrayOf(PropTypes.object),
-};
+export default App;
 
-const mapStateToProps = (state) => ({
-  filter: state.contacts.filter,
-  contacts: state.contacts.items,
-});
+//===================================================================
 
-const mapDispatchToProps = { addContact };
+//* whithout hooks
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// import React, { useEffect } from "react";
+// import { nanoid } from "nanoid";
+// import PropTypes from "prop-types";
+// import ContactForm from "./contactForm/ContactForm";
+// import Filter from "./filter/Filter";
+// import ContactsList from "./contactsList/ContactsList";
+// import styles from "./container/Container.module.css";
+// import { storageKey } from "../data/initialData.json";
+// import dataUI from "../data/dataUI.json";
+// import getDataFromStorage from "../service/storageService";
+// import { connect } from "react-redux";
+// import { addContact } from "../redux/contacts/contactsActions/contactsActions";
+// import {
+//   checkIsDoublingContacts,
+//   contactsToRender,
+// } from "../service/contactsPrepations";
+
+// const {
+//   alertMsg,
+//   titleMain,
+//   titleSecondary,
+//   inputName,
+//   inputTel,
+//   submitBtn,
+//   deleteBtn,
+//   inputSearch,
+//   noDataToRender,
+// } = dataUI;
+
+// const App = ({ contacts, filter, addContact }) => {
+//   useEffect(() => {
+//     const dataFromStorage = getDataFromStorage();
+//     if (!dataFromStorage) return;
+//     dataFromStorage.map(addContact);
+//   }, [addContact]);
+
+//   useEffect(() => {
+//     const dataToStorage = JSON.stringify(contacts);
+//     localStorage.setItem(storageKey, dataToStorage);
+//   }, [contacts]);
+
+//   const addNewContact = (name, number) => {
+//     const isAlreadyInContacts = checkIsDoublingContacts(contacts, name);
+
+//     if (isAlreadyInContacts) {
+//       alert(`${name} ${alertMsg}`);
+//       return isAlreadyInContacts;
+//     }
+
+//     addContact({
+//       name,
+//       id: nanoid(),
+//       number,
+//     });
+
+//     return isAlreadyInContacts;
+//   };
+
+//   const { container, title } = styles;
+//   const contactsDataToRender = contactsToRender(contacts, filter);
+
+//   return (
+//     <div className={container}>
+//       <h2 className={title}>{titleMain}</h2>
+
+//       <ContactForm
+//         dataUI={{ inputName, inputTel, submitBtn }}
+//         addNewContact={addNewContact}
+//       />
+
+//       <h2 className={title}>{titleSecondary}</h2>
+
+//       <Filter inputSearch={inputSearch} filter={filter} />
+
+//       <ContactsList
+//         contactsDataToRender={contactsDataToRender}
+//         dataUI={{ deleteBtn, noDataToRender }}
+//       />
+//     </div>
+//   );
+// };
+
+// App.propTypes = {
+//   addContact: PropTypes.func.isRequired,
+//   filter: PropTypes.string.isRequired,
+//   contacts: PropTypes.arrayOf(PropTypes.object),
+// };
+
+// const mapStateToProps = (state) => ({
+//   filter: state.contacts.filter,
+//   contacts: state.contacts.items,
+// });
+
+// const mapDispatchToProps = { addContact };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
