@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { nanoid } from "nanoid";
+import PropTypes from "prop-types";
 import ContactForm from "./contactForm/ContactForm";
 import Filter from "./filter/Filter";
 import ContactsList from "./contactsList/ContactsList";
 import styles from "./container/Container.module.css";
-import { APP_INITIAL_DATA, storageKey } from "../data/initialData.json";
+import { storageKey } from "../data/initialData.json";
 import dataUI from "../data/dataUI.json";
 import getDataFromStorage from "../service/storageService";
+import { connect } from "react-redux";
+import { addContact } from "../redux/contacts/contactsActions/contactsActions";
+import {
+  checkIsDoublingContacts,
+  contactsToRender,
+} from "../service/contactsPrepations";
 
 const {
   alertMsg,
-  allContacts,
-  search,
   titleMain,
   titleSecondary,
   inputName,
@@ -22,70 +27,33 @@ const {
   noDataToRender,
 } = dataUI;
 
-const App = () => {
-  const [contacts, setContact] = useState(APP_INITIAL_DATA.contacts);
-  const [filter, setFilter] = useState(APP_INITIAL_DATA.filter);
-
+const App = ({ contacts, filter, addContact }) => {
   useEffect(() => {
     const dataFromStorage = getDataFromStorage();
     if (!dataFromStorage) return;
-    setContact([...dataFromStorage]);
-  }, []);
+    dataFromStorage.map(addContact);
+  }, [addContact]);
 
   useEffect(() => {
     const dataToStorage = JSON.stringify(contacts);
     localStorage.setItem(storageKey, dataToStorage);
   }, [contacts]);
 
-  const handleChange = (e) => {
-    const { value } = e.target;
-    setFilter(value);
-  };
-
-  const checkIsDoublingContacts = (newName) => {
-    const isAlreadyInContacts = contacts.some(
-      ({ name }) => name.toLowerCase() === newName.toLowerCase()
-    );
-    return isAlreadyInContacts;
-  };
-
   const addNewContact = (name, number) => {
-    const isAlreadyInContacts = checkIsDoublingContacts(name);
+    const isAlreadyInContacts = checkIsDoublingContacts(contacts, name);
 
     if (isAlreadyInContacts) {
       alert(`${name} ${alertMsg}`);
       return isAlreadyInContacts;
     }
 
-    setContact((prev) => [
-      ...prev,
-      {
-        name,
-        id: nanoid(),
-        number,
-      },
-    ]);
+    addContact({
+      name,
+      id: nanoid(),
+      number,
+    });
 
     return isAlreadyInContacts;
-  };
-
-  const deleteContact = (contactToDelete) => {
-    const filteredContacts = contacts.filter(
-      ({ name }) => name !== contactToDelete
-    );
-    setContact([...filteredContacts]);
-  };
-
-  const contactsToRender = (contacts, filter) => {
-    if (!filter) {
-      return { contacts, title: `${allContacts}` };
-    }
-
-    const filteredContacts = contacts.filter(({ name }) =>
-      name.toLowerCase().includes(filter.toLowerCase())
-    );
-
-    return { contacts: filteredContacts, title: `${search}` };
   };
 
   const { container, title } = styles;
@@ -102,19 +70,27 @@ const App = () => {
 
       <h2 className={title}>{titleSecondary}</h2>
 
-      <Filter
-        inputSearch={inputSearch}
-        filter={filter}
-        handleChange={handleChange}
-      />
+      <Filter inputSearch={inputSearch} filter={filter} />
 
       <ContactsList
         contactsDataToRender={contactsDataToRender}
-        deleteContact={deleteContact}
         dataUI={{ deleteBtn, noDataToRender }}
       />
     </div>
   );
 };
 
-export default App;
+App.propTypes = {
+  addContact: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
+  contacts: PropTypes.arrayOf(PropTypes.object),
+};
+
+const mapStateToProps = (state) => ({
+  filter: state.contacts.filter,
+  contacts: state.contacts.items,
+});
+
+const mapDispatchToProps = { addContact };
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

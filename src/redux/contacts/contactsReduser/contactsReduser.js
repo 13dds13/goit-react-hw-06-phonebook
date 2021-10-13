@@ -8,24 +8,10 @@ import {
 const contactsItemReduser = (state = [], action) => {
   switch (action.type) {
     case ADD_CONTACT:
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          items: [...state.contacts.items, action.payload],
-        },
-      };
+      return [...state, action.payload];
 
     case REMOVE_CONTACT:
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          items: state.contacts.items.filter(
-            (contact) => contact.id !== action.payload
-          ),
-        },
-      };
+      return state.filter((contact) => contact.name !== action.payload);
 
     default:
       return state;
@@ -43,7 +29,7 @@ const contactsFilterReduser = (state = "", action) => {
 };
 
 const contactsReducer = combineReducers({
-  item: contactsItemReduser,
+  items: contactsItemReduser,
   filter: contactsFilterReduser,
 });
 

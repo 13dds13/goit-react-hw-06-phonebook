@@ -1,10 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styles from "./ContactsList.module.css";
+import { removeContact } from "../../redux/contacts/contactsActions/contactsActions";
 
 const { listWrap, listItem, name, number, btn } = styles;
 
-const ContactsList = ({ contactsDataToRender, deleteContact, dataUI }) => {
+const ContactsList = ({ contactsDataToRender, removeContact, dataUI }) => {
   const { deleteBtn, noDataToRender } = dataUI;
   const { title, contacts } = contactsDataToRender;
 
@@ -21,7 +23,7 @@ const ContactsList = ({ contactsDataToRender, deleteContact, dataUI }) => {
             <button
               className={btn}
               type="button"
-              onClick={() => deleteContact(item.name)}
+              onClick={() => removeContact(item.name)}
             >
               {deleteBtn}
             </button>
@@ -35,7 +37,7 @@ const ContactsList = ({ contactsDataToRender, deleteContact, dataUI }) => {
 };
 
 ContactsList.propTypes = {
-  deleteContact: PropTypes.func.isRequired,
+  removeContact: PropTypes.func.isRequired,
   contactsDataToRender: PropTypes.shape({
     title: PropTypes.string.isRequired,
     contacts: PropTypes.arrayOf(
@@ -52,4 +54,6 @@ ContactsList.propTypes = {
   }).isRequired,
 };
 
-export default ContactsList;
+const mapDispatchToProps = { removeContact };
+
+export default connect(null, mapDispatchToProps)(ContactsList);

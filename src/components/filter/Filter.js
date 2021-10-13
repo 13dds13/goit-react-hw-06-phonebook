@@ -30,15 +30,11 @@ const Filter = ({ filter, inputSearch, setFilter }) => {
 };
 
 Filter.propTypes = {
-  handleChange: PropTypes.func.isRequired,
-  filter: PropTypes.string,
+  setFilter: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
   inputSearch: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  filter: state.contacts,
-});
-
 const mapDispatchToProps = { setFilter };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default connect(null, mapDispatchToProps)(Filter);
