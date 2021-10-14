@@ -6,18 +6,18 @@ import {
 } from "../contactsActions/contactsActions";
 
 const items = createReducer([], {
-  [addContact]: (state = [], action) => [...state, action.payload],
-  [removeContact]: (state = [], action) =>
-    state.filter((contact) => contact.name !== action.payload),
+  [addContact]: (state = [], { payload }) => [...state, payload],
+  [removeContact]: (state = [], { payload }) =>
+    state.filter((contact) => contact.name !== payload),
 });
 
 const filter = createReducer("", {
-  [setFilter]: (_, action) => action.payload,
+  [setFilter]: (_, { payload }) => payload,
 });
 
-const contacts = combineReducers({ items, filter });
+const contactsReduser = combineReducers({ items, filter });
 
-export default contacts;
+export default contactsReduser;
 
 //===============Vanilla Redux===========================
 
