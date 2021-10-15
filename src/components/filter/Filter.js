@@ -1,24 +1,27 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { nanoid } from "nanoid";
 import PropTypes from "prop-types";
 import { wrap } from "./Filter.module.css";
 import { setFilter } from "../../redux/contacts/contactsActions/contactsActions";
-import { useSelector, useDispatch } from "react-redux";
+import { getFilter } from "../../redux/contacts/contactsSelector";
 
 const Filter = ({ inputSearch }) => {
-  const filter = useSelector((state) => state.contacts.filter);
+  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 
-  const findContactId = nanoid();
   const handleChange = (e) => {
     const { value } = e.target;
     dispatch(setFilter(value));
   };
+
+  const filterInputId = nanoid();
+
   return (
     <div className={wrap}>
-      <label htmlFor={findContactId}>{inputSearch}</label>
+      <label htmlFor={filterInputId}>{inputSearch}</label>
       <input
-        id={findContactId}
+        id={filterInputId}
         type="text"
         name="filter"
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"

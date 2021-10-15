@@ -1,42 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import PropTypes from "prop-types";
 import { FORM_INITIAL_DATA } from "../../data/initialData.json";
 import { form, btn, input } from "./ContactForm.module.css";
+import { getContacts } from "../../redux/contacts/contactsSelector";
 
 const ContactForm = ({ addNewContact, dataUI }) => {
+  const contacts = useSelector(getContacts);
   const [state, setState] = useState({ ...FORM_INITIAL_DATA });
+
+  useEffect(() => {
+    setState({ ...FORM_INITIAL_DATA });
+  }, [contacts]);
+
   const { name, number } = state;
 
-  const nameId = nanoid();
-  const numberId = nanoid();
+  const inputNameId = nanoid();
+  const inputNumberId = nanoid();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const resetStateData = () => {
-    setState({ ...FORM_INITIAL_DATA });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const wasAlreadyInContacts = addNewContact(name, number);
-
-    if (wasAlreadyInContacts) return;
-
-    resetStateData();
+    addNewContact(name, number);
   };
 
   const { inputName, inputTel, submitBtn } = dataUI;
 
   return (
     <form className={form} onSubmit={handleSubmit}>
-      <label htmlFor={nameId}>{inputName}</label>
+      <label htmlFor={inputNameId}>{inputName}</label>
       <input
         className={input}
-        id={nameId}
+        id={inputNameId}
         type="text"
         name="name"
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -46,10 +46,10 @@ const ContactForm = ({ addNewContact, dataUI }) => {
         onChange={handleChange}
         value={name}
       />
-      <label htmlFor={numberId}>{inputTel}</label>
+      <label htmlFor={inputNumberId}>{inputTel}</label>
       <input
         className={input}
-        id={numberId}
+        id={inputNumberId}
         type="tel"
         name="number"
         pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"

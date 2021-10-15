@@ -1,20 +1,14 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ContactForm from "./contactForm/ContactForm";
 import Filter from "./filter/Filter";
 import ContactsList from "./contactsList/ContactsList";
 import styles from "./container/Container.module.css";
 import dataUI from "../data/dataUI.json";
-import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../redux/contacts/contactsActions/contactsActions";
-import { checkIsDoublingContacts } from "../service/contactsPrepations";
-import {
-  getContacts,
-  getContactsData,
-  getFilter,
-} from "../redux/contacts/contactsSelector";
+import { getContactsData } from "../redux/contacts/contactsSelector";
 
 const {
-  alertMsg,
   titleMain,
   titleSecondary,
   inputName,
@@ -26,23 +20,11 @@ const {
 } = dataUI;
 
 const App = () => {
-  const contacts = useSelector(getContacts);
   const contactsDataToRender = useSelector(getContactsData);
-  const filter = useSelector(getFilter);
 
   const dispatch = useDispatch();
 
-  const addNewContact = (name, number) => {
-    const isAlreadyInContacts = checkIsDoublingContacts(contacts, name);
-
-    if (isAlreadyInContacts) {
-      alert(`${name} ${alertMsg}`);
-      return isAlreadyInContacts;
-    }
-    dispatch(addContact(name, number));
-
-    return isAlreadyInContacts;
-  };
+  const addNewContact = (name, number) => dispatch(addContact(name, number));
 
   const { container, title } = styles;
 
@@ -57,7 +39,7 @@ const App = () => {
 
       <h2 className={title}>{titleSecondary}</h2>
 
-      <Filter inputSearch={inputSearch} filter={filter} />
+      <Filter inputSearch={inputSearch} />
 
       <ContactsList
         contactsDataToRender={contactsDataToRender}
