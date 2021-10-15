@@ -1,18 +1,17 @@
-import React, { useEffect } from "react";
-import { nanoid } from "nanoid";
+import React from "react";
 import ContactForm from "./contactForm/ContactForm";
 import Filter from "./filter/Filter";
 import ContactsList from "./contactsList/ContactsList";
 import styles from "./container/Container.module.css";
-import { storageKey } from "../data/initialData.json";
 import dataUI from "../data/dataUI.json";
-import getDataFromStorage from "../service/storageService";
 import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../redux/contacts/contactsActions/contactsActions";
+import { checkIsDoublingContacts } from "../service/contactsPrepations";
 import {
-  checkIsDoublingContacts,
-  contactsToRender,
-} from "../service/contactsPrepations";
+  getContacts,
+  getContactsData,
+  getFilter,
+} from "../redux/contacts/contactsSelector";
 
 const {
   alertMsg,
@@ -27,21 +26,11 @@ const {
 } = dataUI;
 
 const App = () => {
-  const contacts = useSelector((state) => state.contacts.items);
-  const filter = useSelector((state) => state.contacts.filter);
+  const contacts = useSelector(getContacts);
+  const contactsDataToRender = useSelector(getContactsData);
+  const filter = useSelector(getFilter);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const dataFromStorage = getDataFromStorage();
-    if (!dataFromStorage) return;
-    dataFromStorage.map((contact) => dispatch(addContact(contact)));
-  }, [dispatch]);
-
-  useEffect(() => {
-    const dataToStorage = JSON.stringify(contacts);
-    localStorage.setItem(storageKey, dataToStorage);
-  }, [contacts]);
 
   const addNewContact = (name, number) => {
     const isAlreadyInContacts = checkIsDoublingContacts(contacts, name);
@@ -50,20 +39,12 @@ const App = () => {
       alert(`${name} ${alertMsg}`);
       return isAlreadyInContacts;
     }
-
-    dispatch(
-      addContact({
-        name,
-        id: nanoid(),
-        number,
-      })
-    );
+    dispatch(addContact(name, number));
 
     return isAlreadyInContacts;
   };
 
   const { container, title } = styles;
-  const contactsDataToRender = contactsToRender(contacts, filter);
 
   return (
     <div className={container}>
@@ -121,7 +102,8 @@ export default App;
 //   noDataToRender,
 // } = dataUI;
 
-// const App = ({ contacts, filter, addContact }) => {
+// const App = ({ contactsData, filter, addContact }) => {
+//   const { contacts } = contactsData;
 //   useEffect(() => {
 //     const dataFromStorage = getDataFromStorage();
 //     if (!dataFromStorage) return;
@@ -151,7 +133,6 @@ export default App;
 //   };
 
 //   const { container, title } = styles;
-//   const contactsDataToRender = contactsToRender(contacts, filter);
 
 //   return (
 //     <div className={container}>
@@ -167,7 +148,7 @@ export default App;
 //       <Filter inputSearch={inputSearch} filter={filter} />
 
 //       <ContactsList
-//         contactsDataToRender={contactsDataToRender}
+//         contactsDataToRender={contactsData}
 //         dataUI={{ deleteBtn, noDataToRender }}
 //       />
 //     </div>
@@ -182,7 +163,7 @@ export default App;
 
 // const mapStateToProps = (state) => ({
 //   filter: state.contacts.filter,
-//   contacts: state.contacts.items,
+//   contactsData: contactsToRender(state),
 // });
 
 // const mapDispatchToProps = { addContact };

@@ -1,14 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./components/App";
-import "modern-normalize/modern-normalize.css";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import "modern-normalize/modern-normalize.css";
+import { store, persistor } from "./redux/store";
+import App from "./components/App";
+import "./index.css";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
 
   document.getElementById("root")
