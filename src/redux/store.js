@@ -15,7 +15,7 @@ import contactsReduser from "./contacts/contactsReduser/contactsReduser";
 const persistConfig = {
   key: "contacts",
   storage,
-  whitelist: ["items"],
+  whitelist: "items",
 };
 
 const store = configureStore({
